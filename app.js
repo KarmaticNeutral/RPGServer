@@ -1,21 +1,16 @@
-const http = require('http')
+const {readFileSync} = require('fs')
+const path = require('path')
+const express = require('express')
+const app = express()
+const port = 5000
 
-const server = http.createServer((req, res) => {
-    if (req.url == '/')
-    {
-        res.write('Welcome to our home page.')
-        res.end()
-    } else if (req.url == '/about') {
-        res.write('Here is a short history')
-        res.end()
-    } else {
-        res.write(`
-        <h1> Oops! </h1>
-        <p> The page you are looking for doesn't exist. <a href="/"> Return Home </a></p>
-        `)
-        res.end()
-    }
-    
+const notFoundPage = readFileSync('./pages/notFound.html')
+
+app.use(express.static('./public'))
+
+app.all('*', (req,res) => {
+    res.status(404).send(notFoundPage)
 })
 
-server.listen(5000)
+app.listen(port, ()=>{console.log(`Server is listening on port ${port}...`)})
+
