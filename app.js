@@ -5,7 +5,10 @@ const port = process.env.PORT || 3000
 
 const SqlService = require('./sqlService')
 const { auth, requiresAuth } = require('express-openid-connect')
+const { readFileSync } = require('fs')
 require('dotenv').config()
+
+const notFoundPage = readFileSync('./pages/notFound.html')
 
 app.use(
     express.static('./public'),
