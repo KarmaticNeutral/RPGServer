@@ -38,9 +38,24 @@ app.get('/api/user/creatures', requiresAuth(), (req, res) => {
     res.json(SqlService.GetUserCreatures(req.oidc.user))
 })
 
+app.get('/api/user', requiresAuth(), (req, res) => {
+    res.json(SqlService.GetUserId(req.oidc.user))
+})
+
+app.get('/api/item/:itemId', requiresAuth(), (req, res) => {
+    res.json(SqlService.GetItem(req.oidc.itemId))
+})
+
+app.get('/api/inventory/:creatureId', requiresAuth(), (req, res) => {
+    res.json(SqlService.GetCreatureInventory(req.oidc.creatureId))
+})
+
+app.get('/api/creature/:creatureId/languages', requiresAuth(), (req, res) => {
+    res.json(SqlService.GetCreatureLanguages(req.oidc.creatureId))
+})
+
 app.all('*', (req,res) => {
     res.status(404).send(notFoundPage)
 })
 
 app.listen(port, () => {console.log(`Server is listening on port ${port}...`)})
-
