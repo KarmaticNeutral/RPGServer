@@ -32,22 +32,20 @@ async function runQueryFromFile(path, conn) {
 async function standardQuery(conn, query) {
     return new Promise(resolve => {
         console.log("Running: " + query)
-        conn.connect(function(err) {
+        setTimeout(() => {
+            resolve('Timed Out During Query')
+        }, 10000)
+        conn.query(query, function(err, results) {
             if (err) throw err
-            setTimeout(() => {
-                resolve('Timed Out During Query')
-            }, 10000)
-            conn.query(query, function(err, results) {
-                if (err) throw err
-                console.log("Succesful Query: ", query)
-                console.log("Results of Query", results)
-                resolve(results)
-            })
+            console.log("Succesful Query: ", query)
+            console.log("Results of Query", results)
+            resolve(results)
         })
     })
 }
 
 async function build() {
+    connection.connect((err) => {if (err) throw err})
     await runQueryFromFile('./sqlCommands/createDatabase.sql', connection)
     .catch((err) => {
         throw err
@@ -56,7 +54,16 @@ async function build() {
         console.log("Build Res: ", res)
     })
 
+    rpg.connect((err) => {if (err) throw err})
     await runQueryFromFile('./sqlCommands/createTables.sql', rpg)
+    .catch((err) => {
+        throw err
+    })
+    .then((res) => {
+        console.log("Build Res: ", res)
+    })
+    
+    await runQueryFromFile('./sqlCommands/populateLookups.sql', rpg)
     .catch((err) => {
         throw err
     })

@@ -40,4 +40,18 @@ DROP TABLE rpg.inventory;
 
 DROP TABLE rpg.item;
 
+DROP TABLE rpg.magic_school;
+
+DROP TABLE rpg.spell;
+
+DROP TABLE rpg.source_type;
+
+DROP TABLE rpg.known_spell;
+
+DROP TABLE rpg.feature;
+
+DROP TABLE rpg.class;
+
+DROP TABLE rpg.class_info;
+
 SET FOREIGN_KEY_CHECKS = 1;
