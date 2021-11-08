@@ -19,7 +19,7 @@ async function runQueryFromFile(path, conn) {
     return new Promise(resolve => {
         setTimeout(() => {
             resolve('Timed Out At File Read');
-        }, 11000)
+        }, 30000)
         fs.readFile(path, 'utf-8', (err, res) => {
             if (err) throw err
             standardQuery(conn, res).then((res) => {

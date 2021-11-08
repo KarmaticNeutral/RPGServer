@@ -1,4 +1,4 @@
-require('./buildSql')/*
+//require('./buildSql')
 mysql = require('mysql')
 connection = mysql.createConnection({
     host: 'localhost',
@@ -67,4 +67,3 @@ exports.GetCreatureLanguage = (creatureId) => {
         return results[0].solution
     })
 }
-*/

@@ -7,11 +7,11 @@ const SqlService = require('./sqlService')
 const { auth, requiresAuth } = require('express-openid-connect')
 const fs = require('fs')
 require('dotenv').config()
+const logger = require('./middleware/logger.js')
 
 const notFoundPage = fs.readFileSync('./pages/notFound.html')
 
 app.use(
-    express.static('./public'),
     auth({
         authRequired: false,
         auth0Logout: true,
@@ -22,36 +22,38 @@ app.use(
     })
 )
 
+app.use([requiresAuth(), logger])
+
 app.get('/', (req, res) => {
-    res.send(req.oidc.isAuthenticated() ? 'Logged In' : 'Logged Out')
+    res.status(200).send(req.oidc.isAuthenticated() ? 'Logged In' : 'Logged Out')
 })
 
-app.get('/api/creature/all', requiresAuth(), (req, res) => {
-    res.json(SqlService.GetAllCreatures())
+app.get('/api/creature/all', (req, res) => {
+    res.status(200).json(SqlService.GetAllCreatures())
 })
 
-app.get('/api/creature/:creatureId', requiresAuth(), (req, res) => {
-    res.json(SqlService.GetCreature(req.params.creatureId))
+app.get('/api/creature/:creatureId', (req, res) => {
+    res.status(200).json(SqlService.GetCreature(req.params.creatureId, req.oidc.user))
 })
 
-app.get('/api/user/creatures', requiresAuth(), (req, res) => {
-    res.json(SqlService.GetUserCreatures(req.oidc.user))
+app.get('/api/user/creatures', (req, res) => {
+    res.status(200).json(SqlService.GetUserCreatures(req.oidc.user))
 })
 
-app.get('/api/user', requiresAuth(), (req, res) => {
-    res.json(SqlService.GetUserId(req.oidc.user))
+app.get('/api/user', (req, res) => {
+    res.status(200).json(SqlService.GetUserId(req.oidc.user))
 })
 
-app.get('/api/item/:itemId', requiresAuth(), (req, res) => {
-    res.json(SqlService.GetItem(req.oidc.itemId))
+app.get('/api/item/:itemId', (req, res) => {
+    res.status(200).json(SqlService.GetItem(req.oidc.itemId))
 })
 
-app.get('/api/inventory/:creatureId', requiresAuth(), (req, res) => {
-    res.json(SqlService.GetCreatureInventory(req.oidc.creatureId))
+app.get('/api/inventory/:creatureId', (req, res) => {
+    res.status(200).json(SqlService.GetCreatureInventory(req.oidc.creatureId))
 })
 
-app.get('/api/creature/:creatureId/languages', requiresAuth(), (req, res) => {
-    res.json(SqlService.GetCreatureLanguages(req.oidc.creatureId))
+app.get('/api/creature/:creatureId/languages', (req, res) => {
+    res.status(200).json(SqlService.GetCreatureLanguages(req.oidc.creatureId))
 })
 
 app.all('*', (req,res) => {
