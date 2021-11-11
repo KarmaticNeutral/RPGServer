@@ -25,35 +25,88 @@ app.use(
 app.use([requiresAuth(), logger])
 
 app.get('/', (req, res) => {
-    res.status(200).send(req.oidc.isAuthenticated() ? 'Logged In' : 'Logged Out')
+    if (req.oidc.isAuthenticated()) {
+        SqlService.CreateUserIfNotExists(req.oidc.user, (results) => {})
+        res.status(200).send("Logged In")
+    } else {
+        res.status(200).send("Logged Out")
+    }
 })
 
 app.get('/api/creature/all', (req, res) => {
-    res.status(200).json(SqlService.GetAllCreatures())
+    SqlService.GetAllCreatures((results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/creature/:creatureId', (req, res) => {
-    res.status(200).json(SqlService.GetCreature(req.params.creatureId, req.oidc.user))
+    SqlService.GetCreature(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/user/creatures', (req, res) => {
-    res.status(200).json(SqlService.GetUserCreatures(req.oidc.user))
+    SqlService.GetUserCreatures(req.oidc.user, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/user', (req, res) => {
-    res.status(200).json(SqlService.GetUserId(req.oidc.user))
+    res.status(200).json(req.oidc.user)
 })
 
 app.get('/api/item/:itemId', (req, res) => {
-    res.status(200).json(SqlService.GetItem(req.oidc.itemId))
+    SqlService.GetItem(req.params.itemId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/inventory/:creatureId', (req, res) => {
-    res.status(200).json(SqlService.GetCreatureInventory(req.oidc.creatureId))
+    SqlService.GetCreatureInventory(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/creature/:creatureId/languages', (req, res) => {
-    res.status(200).json(SqlService.GetCreatureLanguages(req.oidc.creatureId))
+    SqlService.GetCreatureLanguage(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
+app.get('/api/damagetype/', async (req, res) => {
+    SqlService.GetDamageTypes((results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
+app.get('/api/damagetype/:type_id', (req, res) => {
+    SqlService.GetDamageType(req.params.type_id, (results) => {    
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.all('*', (req,res) => {

@@ -1,0 +1,1 @@
+exports.NullOrUndefined = (x) => { return x == undefined || x == null } 

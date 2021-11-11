@@ -17,9 +17,6 @@ rpg = mysql.createConnection({
 
 async function runQueryFromFile(path, conn) {
     return new Promise(resolve => {
-        setTimeout(() => {
-            resolve('Timed Out At File Read');
-        }, 30000)
         fs.readFile(path, 'utf-8', (err, res) => {
             if (err) throw err
             standardQuery(conn, res).then((res) => {
@@ -34,7 +31,7 @@ async function standardQuery(conn, query) {
         console.log("Running: " + query)
         setTimeout(() => {
             resolve('Timed Out During Query')
-        }, 10000)
+        }, 30000)
         conn.query(query, function(err, results) {
             if (err) throw err
             console.log("Succesful Query: ", query)
@@ -65,6 +62,14 @@ async function build() {
     
     await runQueryFromFile('./sqlCommands/populateLookups.sql', rpg)
     .catch((err) => {
+        throw err
+    })
+    .then((res) => {
+        console.log("Build Res: ", res)
+    })
+
+    await runQueryFromFile('./sqlCommands/createDMCreature.sql', rpg)
+    .catch((res) => {
         throw err
     })
     .then((res) => {
