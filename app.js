@@ -109,6 +109,15 @@ app.get('/api/damagetype/:type_id', (req, res) => {
     })
 })
 
+app.get('/api/creature/:creatureId/classes', (req, res) => {
+    SqlService.GetCreatureClasses(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
 app.all('*', (req,res) => {
     res.status(404).send(notFoundPage)
 })

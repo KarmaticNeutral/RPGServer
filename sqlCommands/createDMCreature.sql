@@ -73,3 +73,21 @@ INSERT INTO rpg.creature_access (
     1,
     NOW()
 );
+
+INSERT INTO class_info (
+    creature_id,
+    class_id,
+    levels,
+    created_by,
+    created_date,
+    last_updated_by,
+    last_updated_date
+) VALUES (
+    (SELECT creature_id FROM creature WHERE creature_name = "Dungeon Master"),
+    1,
+    1,
+    1,
+    NOW(),
+    1,
+    NOW()
+)

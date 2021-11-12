@@ -69,7 +69,7 @@ async function build() {
     })
 
     await runQueryFromFile('./sqlCommands/createDMCreature.sql', rpg)
-    .catch((res) => {
+    .catch((err) => {
         throw err
     })
     .then((res) => {
