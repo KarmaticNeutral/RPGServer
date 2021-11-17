@@ -1,5 +1,3 @@
-const { text } = require('express');
-
 require('./buildSql')
 mysql = require('mysql')
 
@@ -92,11 +90,11 @@ exports.GetCreatureAttacks = (creatureId, callback) => {
     })
 }
 
-exports.GetDamageTypes = (callback) => {
-    connection.query('SELECT * FROM damage_type', [], function(error, results, fields) {
+exports.GetAlignments = (callback) => {
+    connection.query('SELECT * FROM alignment', [], function(error, results, fields) {
         if (error) throw error
         callback(results)
-    })
+    })    
 }
 
 exports.GetAlignment = (alignmentId, callback) => {
@@ -104,6 +102,13 @@ exports.GetAlignment = (alignmentId, callback) => {
         if (error) throw error
         callback(results)
     })
+}
+
+exports.GetCreatureTypes = (callback) => {
+    connection.query('SELECT * FROM creautre_type', [], function(error, results, fields) {
+        if (error) throw error
+        callback(results)
+    })  
 }
 
 exports.GetCreatureType = (creatureTypeId, callback) => {
@@ -120,6 +125,13 @@ exports.GetCreatureSize = (creatureSizeId, callback) => {
     })
 }
 
+exports.GetDamageTypes = (callback) => {
+    connection.query('SELECT * FROM damage_type', [], function(error, results, fields) {
+        if (error) throw error
+        callback(results)
+    })
+}
+
 exports.GetDamageType = (type_id, callback) => {
     connection.query('SELECT * FROM damage_type WHERE damage_type_id = ?', [type_id], function(error, results, fields) {
         if (error) throw error
@@ -127,22 +139,43 @@ exports.GetDamageType = (type_id, callback) => {
     })
 }
 
-exports.GetDamageModification = (damageModificationId, callback) => {
-    connection.query('SELECT * FROM damage_modification WHERE damage_modification_id = ?', [damageModificationId], function(error, results, fields) {
+exports.GetCreatureDamageModifications = (creatureId, callback) => {
+    connection.query('SELECT * FROM damage_modification WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+        if (error) throw error
+        callback(results)
+    })  
+}
+
+exports.GetModificationTypes = (callback) => {
+    connection.query('SELECT * FROM modifcation_type', [], function(error, results, fields) {
         if (error) throw error
         callback(results)
     })
 }
 
-exports.GetModifcationType = (modificationTypeId, callback) => {
+exports.GetModificationType = (modificationTypeId, callback) => {
     connection.query('SELECT * FROM modifcation_type WHERE modification_type_id = ?', [modificationTypeId], function(error, results, fields) {
         if (error) throw error
         callback(results)
     })
 }
 
-exports.GetaAbility = (abilityId, callback) => {
+exports.GetAbilities = (callback) => {
+    connection.query('SELECT * FROM ability', [], function(error, results, fields) {
+        if (error) throw error
+        callback(results)
+    })
+}
+
+exports.GetAbility = (abilityId, callback) => {
     connection.query('SELECT * FROM ability WHERE ability_id = ?', [abilityId], function(error, results, fields) {
+        if (error) throw error
+        callback(results)
+    })
+}
+
+exports.GetClassNames = (callback) => {
+    connection.query('SELECT class_name FROM class', [], function(error, results, fields) {
         if (error) throw error
         callback(results)
     })
@@ -155,15 +188,42 @@ exports.GetCreatureClasses = (creatureId, callback) => {
     })
 }
 
-exports.GetBackground = (backgroundId, callback) => {
-    connection.query('SELECT * FROM background WHERE background_id = ?', [backgroundId], function(error, results, fields) {
+exports.GetBackgrounds = (callback) => {
+    connection.query('SELECT * FROM background', [], function(error, results, fields) {
+        if (error) throw error
+        callback(results)
+    }) 
+}
+
+exports.GetCreatureBackground = (creatureId, callback) => {
+    connection.query('SELECT background_id FROM creature WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+        if (error) throw error
+        connection.query('SELECT * FROM background WHERE background_id = ?', [results], function(error, results, fields) {
+            if (error) throw error
+            callback(results)
+        })
+    })
+}
+
+exports.GetRaces = (callback) => {
+    connection.query('SELECT * FROM race', [], function(error, results, fields) {
         if (error) throw error
         callback(results)
     })
 }
 
-exports.GetRace = (raceId, callback) => {
-    connection.query('SELECT * FROM race WHERE race_id = ?', [raceId], function(error, results, fields) {
+exports.GetCreatureRace = (creatureId, callback) => {
+    connection.query('SELECT race_id FROM creature WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+        if (error) throw error
+        connection.query('SELECT * FROM race WHERE race_id = ?', [results], function(error, results, fields) {
+            if (error) throw error
+            callback(results)
+        })
+    })  
+}
+
+exports.GetMagicSchoolNames = (callback) => {
+    connection.query('SELECT name from magic_school', [], (req, res) => {
         if (error) throw error
         callback(results)
     })
@@ -184,7 +244,7 @@ exports.GetSpell = (spellId, callback) => {
 }
 
 exports.GetKnownSpells = (creatureId, callback) => {
-    connection.query('SELECT * FROM known_spell WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+    connection.query('SELECT * FROM known_spell JOIN spell ON known_spell.spell_id = spell.spell_id WHERE creature_id = ?', [creatureId], function(error, results, fields) {
         if (error) throw error
         callback(results)
     })
