@@ -193,6 +193,21 @@ exports.GetCreatureLanguage = (creatureId, callback) => {
     })
 }
 
+exports.CreateCreatureLanguage = (creatureId, languageId, userId, callback) => {
+    connection.query('INSERT INTO known_language (creature_id, language_id, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, NOW(), ?, NOW()', [creatureId, languageId, userId, userId], function(error, results, fields) {
+        if (error) throw error
+        callback(results)
+    })
+}
+
+exports.DeleteCreatureLanguage = (creatureId, languageId, callback) => {
+    connection.query('DELETE FROM known_language WHERE creature_id = ? AND language_id = ?', [creatureId, languageId], function(error, results, fields) {
+        if (error) throw error
+        callback(results)
+    })
+}
+
+//TODO
 exports.GetCreatureAttacks = (creatureId, callback) => {
     connection.query('SELECT * FROM attack WHERE creature_id = ?', [creatureId], function(error, results, fields) {
         if (error) throw error
@@ -256,6 +271,20 @@ exports.GetCreatureDamageModifications = (creatureId, callback) => {
     })  
 }
 
+exports.CreateCreatureDamageModification = (creatureId, damageTypeId, modificationTypeId, userId, callback) => {
+    connection.query('INSERT INTO damage_modification (creature_id, damage_type_id, modification_type_id, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, ?, NOW(), ?, NOW()', [creatureId, damageTypeId, modificationTypeId, userId, userId], function(error, results, fields) {
+        if (error) throw error
+        callback(results)
+    })
+}
+
+exports.DeleteCreatureDamageModification = (damageModificationId, callback) => {
+    connection.query('DELETE FROM damage_modification WHERE damage_modification_id = ?', [damageModificationId], function(error, results, fields) {
+        if (error) throw error
+        callback(results)
+    })
+}
+
 exports.GetModificationTypes = (callback) => {
     connection.query('SELECT * FROM modifcation_type', [], function(error, results, fields) {
         if (error) throw error
@@ -298,6 +327,14 @@ exports.GetCreatureClasses = (creatureId, callback) => {
     })
 }
 
+exports.PutLevelsInCreatureClass = (creatureId, classId, levels, userId, callback) => {
+    connection.query('SELECT * FROM class_info WHERE class_id = ? AND creature_id = ?', [classId, creatureId], function(error, results, fields) {
+        if (error) throw error
+        //TODO detect if there is already a row, if there is update it.
+        // if not create a new row
+    })
+}
+
 exports.GetBackgrounds = (callback) => {
     connection.query('SELECT * FROM background', [], function(error, results, fields) {
         if (error) throw error
@@ -305,6 +342,7 @@ exports.GetBackgrounds = (callback) => {
     }) 
 }
 
+//TODO make this better with a JOIN
 exports.GetCreatureBackground = (creatureId, callback) => {
     connection.query('SELECT background_id FROM creature WHERE creature_id = ?', [creatureId], function(error, results, fields) {
         if (error) throw error
@@ -312,6 +350,13 @@ exports.GetCreatureBackground = (creatureId, callback) => {
             if (error) throw error
             callback(results)
         })
+    })
+}
+
+exports.UpdateCreatureBackground = (creatureId, backgroundId, userId, callback) => {
+    connection.query('UPDATE creature SET background_id = ?, last_updated_by = ?, last_updated_date = NOW() WHERE creature_id = ?', [backgroundId, userId, creatureId], function(error, results, fields) {
+        if (error) throw error
+        callback(results)
     })
 }
 
@@ -330,6 +375,13 @@ exports.GetCreatureRace = (creatureId, callback) => {
             callback(results)
         })
     })  
+}
+
+exports.UpdateCreatureRace = (creatureId, raceId, userId, callback) => {
+    connection.query('UPDATE creature SET race_id = ?, last_updated_by = ?, last_updated_date = NOW() WHERE creature_id = ?', [raceId, userId, creatureId], function(error, results, fields) {
+        if (error) throw error
+        callback(results)
+    })
 }
 
 exports.GetMagicSchoolNames = (callback) => {
@@ -353,8 +405,15 @@ exports.GetSpell = (spellId, callback) => {
     })
 }
 
-exports.GetKnownSpells = (creatureId, callback) => {
+exports.GetCreatureKnownSpells = (creatureId, callback) => {
     connection.query('SELECT * FROM known_spell JOIN spell ON known_spell.spell_id = spell.spell_id WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+        if (error) throw error
+        callback(results)
+    })
+}
+
+exports.CreateCreatureKnownSpell = (creatureId, spellId, sourceTypeId, sourceId, userId, callback) => {
+    connection.query('INSERT INTO known_spell (spell_id, creature_id, source_type_id, source_id, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, ?, ?, NOW(), ?, NOW())', [spellId, creatureId, sourceTypeId, sourceId, userId, userId], function(error, results, fields) {
         if (error) throw error
         callback(results)
     })
