@@ -257,3 +257,16 @@ INSERT INTO proficiency_type (
     ( "Tool",         1, NOW(), 1, NOW() ),
     ( "Saving Throw", 1, NOW(), 1, NOW() ),
     ( "Attack",       1, NOW(), 1, NOW() );
+
+INSERT INTO item (
+    name,
+    description,
+    item_data,
+    created_by,
+    created_date,
+    last_updated_by,
+    last_updated_date
+) VALUES 
+    ( "Bedroll", " A bedroll consists of bedding and a blanket thin enough to be rolled up and tied. In an emergency, it can double as a stretcher.", "Type: Adventuring Gear, Weight: 7 lbs, Cost: 1 GP", 1, NOW(), 1, NOW() ),
+    ( "Bag of Holding", "This bag has an interior space considerably larger than its outside dimensions, roughly 2 feet in diameter at the mouth and 4 feet deep. The bag can hold up to 500 pounds, not exceeding a volume of 64 cubic feet.", "Type: Adventuring Gear, Item Rarity: Uncommon, Weight: 15 lbs", 1, NOW(), 1, NOW()),
+    ( "Ration", "Rations consist of dry foods suitable for extended travel, including jerky, dried fruit, hardtack, and nuts.", "Type: Adventuring Gear, Cost: 5 SP, Weight: 2 lbs", 1, NOW(), 1, NOW())

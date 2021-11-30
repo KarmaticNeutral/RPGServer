@@ -31,7 +31,7 @@ exports.GetAllCreatures = (callback) => {
 }
 
 exports.GetCreature = (creatureId, callback) => {
-    connection.query('SELECT * FROM creature WHERE creatureId = ?', [creatureId], function (error, results, fields) {
+    connection.query('SELECT * FROM creature WHERE creature_id = ?', [creatureId], function (error, results, fields) {
         if (error) throw error
         callback(results)
     });
@@ -126,7 +126,16 @@ exports.DeleteItem = (itemId, callback) => {
 exports.GetCreaturePurse = (creatureId, callback) => {
     connection.query('SELECT * FROM purse WHERE creature_id = ?', [creatureId], function(error, results, fields) {
         if (error) throw error
-        callback(results)
+        if (results.length == 0) {
+            connection.query('INSERT INTO purse (creature_id, platinum_count, gold_count, electrum_count, silver_count, copper_count, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, 0, 0, 0, 0, 0, 1, NOW(), 1, NOW())', [creatureId], function(error, results, fields) {
+                if (error) throw error
+                connection.query('SELECT * FROM purse WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+                    callback(results)
+                })
+            })
+        } else {
+            callback(results)
+        }
     })
 }
 

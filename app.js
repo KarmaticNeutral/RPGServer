@@ -10,12 +10,6 @@ require('dotenv').config()
 const logger = require('./middleware/logger.js')
 
 const notFoundPage = fs.readFileSync('./pages/notFound.html')
-const basicCallback = (results) => {
-    if (results)
-        res.status(200).json(results)
-    else
-        res.status(503).send("Service Unavailable")
-}
 
 app.use(
     auth({
@@ -29,7 +23,10 @@ app.use(
 )
 
 app.use([requiresAuth(), logger])
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
+//Working
 app.get('/', (req, res) => {
     if (req.oidc.isAuthenticated()) {
         SqlService.CreateUserIfNotExists(req.oidc.user, (results) => {})
@@ -39,128 +36,294 @@ app.get('/', (req, res) => {
     }
 })
 
+//Working
 app.get('/api/creature/all', (req, res) => {
-    SqlService.GetAllCreatures()
+    SqlService.GetAllCreatures((results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
+//Working
 app.get('/api/creature/:creatureId', (req, res) => {
-    SqlService.GetCreature(req.params.creatureId, basicCallback)
+    SqlService.GetCreature(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
+//TODO
+app.put('/api/creature/', (req, res) => {
+    SqlService.UpdateCreature(req.body.creature, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
+//Working
 app.get('/api/user/creatures', (req, res) => {
-    SqlService.GetUserCreatures(req.oidc.user, basicCallback)
+    SqlService.GetUserCreatures(req.oidc.user, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
+//Working
 app.get('/api/user', (req, res) => {
     res.status(200).json(req.oidc.user)
 })
 
+//Working
 app.get('/api/item/:itemId', (req, res) => {
-    SqlService.GetItem(req.params.itemId, basicCallback)
+    SqlService.GetItem(req.params.itemId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
+//TODO
 app.get('/api/purse/:creatureId', (req, res) => {
-    SqlService.GetCreaturePurse(req.params.creatureId, basicCallback)
+    SqlService.GetCreaturePurse(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/inventory/:creatureId', (req, res) => {
-    SqlService.GetCreatureInventory(req.params.creatureId, basicCallback)
+    SqlService.GetCreatureInventory(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/creature/:creatureId/languages', (req, res) => {
-    SqlService.GetCreatureLanguage(req.params.creatureId, basicCallback)
+    SqlService.GetCreatureLanguage(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('api/creature/attacks/:creatureId', (req, res) => {
-    SqlService.GetCreatureAttacks(req.params.creatureId, basicCallback)
+    SqlService.GetCreatureAttacks(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/damagetype/', async (req, res) => {
-    SqlService.GetDamageTypes(basicCallback)
+    SqlService.GetDamageTypes((results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/damagetype/:type_id', (req, res) => {
-    SqlService.GetDamageType(req.params.type_id, basicCallback)
+    SqlService.GetDamageType(req.params.type_id, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/alignment', (req, res) => {
-    SqlService.GetAlignments(basicCallback)
+    SqlService.GetAlignments((results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/alignment/:alignmentId', (req, res) => {
-    SqlService.GetAlignment(req.params.alignmentId, basicCallback)
+    SqlService.GetAlignment(req.params.alignmentId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/creature/:creatureId/classes', (req, res) => {
-    SqlService.GetCreatureClasses(req.params.creatureId, basicCallback)
+    SqlService.GetCreatureClasses(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/creature/type', (req, res) => {
-    SqlService.GetCreatureTypes(basicCallback)
+    SqlService.GetCreatureTypes((results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/creature/type/:creatureTypeId', (req, res) => {
-    SqlService.GetCreatureType(req.params.creatureTypeId, basicCallback)
+    SqlService.GetCreatureType(req.params.creatureTypeId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/creature/:creatureID/damage_modification', (req, res) => {
-    SqlService.GetCreatureDamageModifications(req.params.creatureID, basicCallback)
+    SqlService.GetCreatureDamageModifications(req.params.creatureID, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/modification_type', (req, res) => {
-    SqlService.GetModificationTypes(basicCallback)
+    SqlService.GetModificationTypes((results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/modification_type/:type_id', (req, res) => {
-    SqlService.GetModificationType(req.params.type_id, basicCallback)
+    SqlService.GetModificationType(req.params.type_id, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/ability', (req, res) => {
-    SqlService.GetAbilities(basicCallback)
+    SqlService.GetAbilities((results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/ability/:abilityId', (req, res) => {
-    SqlService.GetAbility(req.params.abilityId, basicCallback)
+    SqlService.GetAbility(req.params.abilityId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/class/name', (req, res) => {
-    SqlService.GetClassNames(basicCallback)
+    SqlService.GetClassNames((results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/creature/:creatureId/class', (req, res) => {
-    SqlService.GetCreatureClasses(req.params.creatureId, basicCallback)
+    SqlService.GetCreatureClasses(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/background', (req, res) => {
-    SqlService.GetBackgrounds(basicCallback)
+    SqlService.GetBackgrounds((results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/creature/:creatureId/background', (req, res) => {
-    SqlService.GetCreatureBackground(req.params.creatureId, basicCallback)
+    SqlService.GetCreatureBackground(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/magic_school', (req, res) => {
-    SqlService.GetMagicSchoolNames(basicCallback)  
+    SqlService.GetMagicSchoolNames((results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })  
 })
 
 app.get('/api/magic_school/:schoolId', (req, res) => {
-    SqlService.GetMagicSchool(req.params.schoolId, basicCallback)
+    SqlService.GetMagicSchool(req.params.schoolId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/spell/:spellId', (req, res) => {
-    SqlService.GetSpell(req.params.spellId, basicCallback)
+    SqlService.GetSpell(req.params.spellId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/creature/:creatureId/spell', (req, res) => {
-    SqlService.GetKnownSpells(req.params.creatureId, basicCallback)
+    SqlService.GetKnownSpells(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/feature/:featureId', (req, res) => {
-    SqlService.GetFeature(req.params.featureId, basicCallback)
+    SqlService.GetFeature(req.params.featureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.get('/api/sourceType/:sourceTypeId', (req, res) => {
-    SqlService.GetSourceType(req.params.sourceTypeId, basicCallback)
+    SqlService.GetSourceType(req.params.sourceTypeId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
 })
 
 app.all('*', (req,res) => {

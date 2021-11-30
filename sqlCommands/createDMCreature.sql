@@ -83,7 +83,7 @@ INSERT INTO class_info (
     last_updated_by,
     last_updated_date
 ) VALUES (
-    (SELECT creature_id FROM creature WHERE creature_name = "Dungeon Master"),
+    (SELECT creature_id FROM creature WHERE creature_name = "Dungeon Master" LIMIT 1),
     1,
     1,
     1,
