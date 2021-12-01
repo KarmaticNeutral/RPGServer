@@ -90,4 +90,61 @@ INSERT INTO class_info (
     NOW(),
     1,
     NOW()
-)
+);
+
+INSERT INTO inventory (
+    creature_id,
+    item_id,
+    quantity,
+    created_by,
+    created_date,
+    last_updated_by,
+    last_updated_date
+) VALUES 
+    ( 1, 1, 1, 1, NOW(), 1, NOW() ),
+    ( 1, 2, 1, 1, NOW(), 1, NOW() ),
+    ( 1, 3, 10, 1, NOW(), 1, NOW() );
+
+INSERT INTO known_language (
+    language_id,
+    creature_id,
+    created_by,
+    created_date,
+    last_updated_by,
+    last_updated_date
+) VALUES
+    ( 1, 1, 1, NOW(), 1, NOW() ),
+    ( 2, 1, 1, NOW(), 1, NOW() ),
+    ( 3, 1, 1, NOW(), 1, NOW() ),
+    ( 4, 1, 1, NOW(), 1, NOW() ),
+    ( 5, 1, 1, NOW(), 1, NOW() ),
+    ( 6, 1, 1, NOW(), 1, NOW() );
+
+INSERT INTO attack (
+    attack_name,
+    creature_id,
+    attack_range,
+    bonus,
+    damage_die,
+    damage_die_count,
+    damage_bonus,
+    damage_type_id,
+    created_by,
+    created_date,
+    last_updated_by,
+    last_updated_date
+) VALUES
+    ( "Slap", 1, "10 Feet", 14, 10, 2, 10, 1, 1, NOW(), 1, NOW()),
+    ( "Punch", 1, "5 Feet", 16, 12, 1, 14, 1, 1, NOW(), 1, NOW());
+
+
+INSERT INTO damage_modification (
+    creature_id,
+    damage_type_id,
+    modification_type_id,
+    created_by,
+    created_date,
+    last_updated_by,
+    last_updated_date
+) VALUES 
+    (1, 1, 1, 1, NOW(), 1, NOW());

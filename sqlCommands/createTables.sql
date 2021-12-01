@@ -213,11 +213,13 @@ CREATE TABLE IF NOT EXISTS damage_modification (
 
 CREATE TABLE IF NOT EXISTS attack (
 	attack_id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+    attack_name VARCHAR(255),
     creature_id MEDIUMINT,
     attack_range VARCHAR(255) NOT NULL,
     bonus TINYINT NOT NULL,
     damage_die TINYINT NOT NULL,
     damage_die_count TINYINT NOT NULL,
+    damage_bonus TINYINT NOT NULL,
     damage_type_id TINYINT NOT NULL,
     created_by MEDIUMINT NOT NULL,
     created_date DATE NOT NULL,
@@ -289,6 +291,7 @@ CREATE TABLE IF NOT EXISTS inventory (
 	inventory_id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
     creature_id MEDIUMINT,
     item_id MEDIUMINT,
+    quantity SMALLINT,
     created_by MEDIUMINT NOT NULL,
     created_date DATE NOT NULL,
     last_updated_by MEDIUMINT NOT NULL,

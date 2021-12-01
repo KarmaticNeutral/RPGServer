@@ -238,15 +238,16 @@ exports.GetAlignment = (alignmentId, callback) => {
     })
 }
 
-exports.GetCreatureTypes = (callback) => {
-    connection.query('SELECT * FROM creautre_type', [], function(error, results, fields) {
+exports.GetAllCreatureTypes = (callback) => {
+    connection.query('SELECT * FROM creature_type', [], function(error, results, fields) {
         if (error) throw error
+        console.log("Results" + results)
         callback(results)
     })  
 }
 
 exports.GetCreatureType = (creatureTypeId, callback) => {
-    connection.query('SELECT * FROM creautre_type WHERE creature_type_id = ?', [creatureTypeId], function(error, results, fields) {
+    connection.query('SELECT * FROM creature_type WHERE creature_type_id = ?', [creatureTypeId], function(error, results, fields) {
         if (error) throw error
         callback(results)
     })

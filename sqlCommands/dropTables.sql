@@ -54,4 +54,6 @@ DROP TABLE rpg.class;
 
 DROP TABLE rpg.class_info;
 
+DROP TABLE rpg.proficiency_type;
+
 SET FOREIGN_KEY_CHECKS = 1;

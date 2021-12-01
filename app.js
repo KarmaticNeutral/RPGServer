@@ -23,8 +23,8 @@ app.use(
 )
 
 app.use([requiresAuth(), logger])
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+// app.use(express.json())
+// app.use(express.urlencoded({ extended: true }))
 
 //Working
 app.get('/', (req, res) => {
@@ -91,7 +91,7 @@ app.get('/api/item/:itemId', (req, res) => {
     })
 })
 
-//TODO
+//Working
 app.get('/api/purse/:creatureId', (req, res) => {
     SqlService.GetCreaturePurse(req.params.creatureId, (results) => {
         if (results)
@@ -101,6 +101,7 @@ app.get('/api/purse/:creatureId', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/inventory/:creatureId', (req, res) => {
     SqlService.GetCreatureInventory(req.params.creatureId, (results) => {
         if (results)
@@ -110,6 +111,7 @@ app.get('/api/inventory/:creatureId', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/creature/:creatureId/languages', (req, res) => {
     SqlService.GetCreatureLanguage(req.params.creatureId, (results) => {
         if (results)
@@ -119,7 +121,8 @@ app.get('/api/creature/:creatureId/languages', (req, res) => {
     })
 })
 
-app.get('api/creature/attacks/:creatureId', (req, res) => {
+//Working
+app.get('/api/creature/:creatureId/attacks', (req, res) => {
     SqlService.GetCreatureAttacks(req.params.creatureId, (results) => {
         if (results)
             res.status(200).json(results)
@@ -128,6 +131,7 @@ app.get('api/creature/attacks/:creatureId', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/damagetype/', async (req, res) => {
     SqlService.GetDamageTypes((results) => {
         if (results)
@@ -137,6 +141,7 @@ app.get('/api/damagetype/', async (req, res) => {
     })
 })
 
+//Working
 app.get('/api/damagetype/:type_id', (req, res) => {
     SqlService.GetDamageType(req.params.type_id, (results) => {
         if (results)
@@ -146,6 +151,7 @@ app.get('/api/damagetype/:type_id', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/alignment', (req, res) => {
     SqlService.GetAlignments((results) => {
         if (results)
@@ -155,6 +161,7 @@ app.get('/api/alignment', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/alignment/:alignmentId', (req, res) => {
     SqlService.GetAlignment(req.params.alignmentId, (results) => {
         if (results)
@@ -164,6 +171,7 @@ app.get('/api/alignment/:alignmentId', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/creature/:creatureId/classes', (req, res) => {
     SqlService.GetCreatureClasses(req.params.creatureId, (results) => {
         if (results)
@@ -173,8 +181,10 @@ app.get('/api/creature/:creatureId/classes', (req, res) => {
     })
 })
 
+//TODO
 app.get('/api/creature/type', (req, res) => {
-    SqlService.GetCreatureTypes((results) => {
+    console.log("Ran creature Type")
+    SqlService.GetAllCreatureTypes((results) => {
         if (results)
             res.status(200).json(results)
         else
@@ -182,6 +192,7 @@ app.get('/api/creature/type', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/creature/type/:creatureTypeId', (req, res) => {
     SqlService.GetCreatureType(req.params.creatureTypeId, (results) => {
         if (results)
@@ -191,6 +202,7 @@ app.get('/api/creature/type/:creatureTypeId', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/creature/:creatureID/damage_modification', (req, res) => {
     SqlService.GetCreatureDamageModifications(req.params.creatureID, (results) => {
         if (results)
