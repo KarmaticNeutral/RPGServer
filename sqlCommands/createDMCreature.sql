@@ -148,3 +148,42 @@ INSERT INTO damage_modification (
     last_updated_date
 ) VALUES 
     (1, 1, 1, 1, NOW(), 1, NOW());
+
+INSERT INTO known_spell (
+    spell_id,
+    creature_id,
+    created_by,
+    created_date,
+    last_updated_by,
+    last_updated_date
+) VALUES 
+    ( 1, 1, 1, NOW(), 1, NOW());
+
+INSERT INTO proficiency (
+    proficiency_skill,
+    proficiency_level_id,
+    proficiency_type_id,
+    creature_id,
+    created_by,
+    created_date,
+    last_updated_by,
+    last_updated_date
+) VALUES
+    ( "Acrobatics", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Animal Handling", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Arcana", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Athletics", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Deception", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "History", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Insight", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Intimidation", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Investigation", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Medicine", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Nature", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Perception", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Performance", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Persuassion", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Religion", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Sleight of Hand", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Stealth", 3, 1, 1, 1, NOW(), 1, NOW()),
+    ( "Survival", 3, 1, 1, 1, NOW(), 1, NOW());

@@ -92,7 +92,7 @@ app.get('/api/item/:itemId', (req, res) => {
 })
 
 //Working
-app.get('/api/purse/:creatureId', (req, res) => {
+app.get('/api/creature/:creatureId/purse', (req, res) => {
     SqlService.GetCreaturePurse(req.params.creatureId, (results) => {
         if (results)
             res.status(200).json(results)
@@ -162,6 +162,16 @@ app.get('/api/alignment', (req, res) => {
 })
 
 //Working
+app.get('/api/creaturetype', (req, res) => {
+    SqlService.GetAllCreatureTypes((results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
+//Working
 app.get('/api/alignment/:alignmentId', (req, res) => {
     SqlService.GetAlignment(req.params.alignmentId, (results) => {
         if (results)
@@ -174,17 +184,6 @@ app.get('/api/alignment/:alignmentId', (req, res) => {
 //Working
 app.get('/api/creature/:creatureId/classes', (req, res) => {
     SqlService.GetCreatureClasses(req.params.creatureId, (results) => {
-        if (results)
-            res.status(200).json(results)
-        else
-            res.status(503).send("Service Unavailable")
-    })
-})
-
-//TODO
-app.get('/api/creature/type', (req, res) => {
-    console.log("Ran creature Type")
-    SqlService.GetAllCreatureTypes((results) => {
         if (results)
             res.status(200).json(results)
         else
@@ -212,6 +211,7 @@ app.get('/api/creature/:creatureID/damage_modification', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/modification_type', (req, res) => {
     SqlService.GetModificationTypes((results) => {
         if (results)
@@ -221,6 +221,7 @@ app.get('/api/modification_type', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/modification_type/:type_id', (req, res) => {
     SqlService.GetModificationType(req.params.type_id, (results) => {
         if (results)
@@ -230,6 +231,7 @@ app.get('/api/modification_type/:type_id', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/ability', (req, res) => {
     SqlService.GetAbilities((results) => {
         if (results)
@@ -239,6 +241,7 @@ app.get('/api/ability', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/ability/:abilityId', (req, res) => {
     SqlService.GetAbility(req.params.abilityId, (results) => {
         if (results)
@@ -248,6 +251,7 @@ app.get('/api/ability/:abilityId', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/class/name', (req, res) => {
     SqlService.GetClassNames((results) => {
         if (results)
@@ -257,15 +261,7 @@ app.get('/api/class/name', (req, res) => {
     })
 })
 
-app.get('/api/creature/:creatureId/class', (req, res) => {
-    SqlService.GetCreatureClasses(req.params.creatureId, (results) => {
-        if (results)
-            res.status(200).json(results)
-        else
-            res.status(503).send("Service Unavailable")
-    })
-})
-
+//Working
 app.get('/api/background', (req, res) => {
     SqlService.GetBackgrounds((results) => {
         if (results)
@@ -275,6 +271,7 @@ app.get('/api/background', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/creature/:creatureId/background', (req, res) => {
     SqlService.GetCreatureBackground(req.params.creatureId, (results) => {
         if (results)
@@ -284,6 +281,7 @@ app.get('/api/creature/:creatureId/background', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/magic_school', (req, res) => {
     SqlService.GetMagicSchoolNames((results) => {
         if (results)
@@ -293,6 +291,7 @@ app.get('/api/magic_school', (req, res) => {
     })  
 })
 
+//Working
 app.get('/api/magic_school/:schoolId', (req, res) => {
     SqlService.GetMagicSchool(req.params.schoolId, (results) => {
         if (results)
@@ -302,6 +301,7 @@ app.get('/api/magic_school/:schoolId', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/spell/:spellId', (req, res) => {
     SqlService.GetSpell(req.params.spellId, (results) => {
         if (results)
@@ -311,8 +311,9 @@ app.get('/api/spell/:spellId', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/creature/:creatureId/spell', (req, res) => {
-    SqlService.GetKnownSpells(req.params.creatureId, (results) => {
+    SqlService.GetCreatureKnownSpells(req.params.creatureId, (results) => {
         if (results)
             res.status(200).json(results)
         else
@@ -320,6 +321,7 @@ app.get('/api/creature/:creatureId/spell', (req, res) => {
     })
 })
 
+//Working
 app.get('/api/feature/:featureId', (req, res) => {
     SqlService.GetFeature(req.params.featureId, (results) => {
         if (results)
@@ -329,8 +331,9 @@ app.get('/api/feature/:featureId', (req, res) => {
     })
 })
 
-app.get('/api/sourceType/:sourceTypeId', (req, res) => {
-    SqlService.GetSourceType(req.params.sourceTypeId, (results) => {
+//Working
+app.get('/api/creature/:creatureId/proficiencies', (req, res) => {
+    SqlService.GetCreatureProficiencies(req.params.creatureId, (results) => {
         if (results)
             res.status(200).json(results)
         else

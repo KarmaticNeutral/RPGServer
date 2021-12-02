@@ -337,30 +337,16 @@ CREATE TABLE IF NOT EXISTS spell (
     FOREIGN KEY (last_updated_by) REFERENCES user(user_id) 
 );
 
-CREATE TABLE IF NOT EXISTS source_type (
-    source_type_id TINYINT AUTO_INCREMENT PRIMARY KEY,
-    source_name VARCHAR(255) NOT NULL,
-    created_by MEDIUMINT NOT NULL,
-    created_date DATE NOT NULL,
-    last_updated_by MEDIUMINT NOT NULL,
-    last_updated_date DATE NOT NULL,
-    FOREIGN KEY (created_by) REFERENCES user(user_id),
-    FOREIGN KEY (last_updated_by) REFERENCES user(user_id) 
-);
-
 CREATE TABLE IF NOT EXISTS known_spell (
     known_spell_id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
     spell_id SMALLINT NOT NULL,
     creature_id MEDIUMINT NOT NULL,
-    source_type_id TINYINT NOT NULL,
-    source_id SMALLINT,
     created_by MEDIUMINT NOT NULL,
     created_date DATE NOT NULL,
     last_updated_by MEDIUMINT NOT NULL,
     last_updated_date DATE NOT NULL,
     FOREIGN KEY (spell_id) REFERENCES spell(spell_id),
     FOREIGN KEY (creature_id) REFERENCES creature(creature_id),
-    FOREIGN KEY (source_type_id) REFERENCES source_type(source_type_id),
     FOREIGN KEY (created_by) REFERENCES user(user_id),
     FOREIGN KEY (last_updated_by) REFERENCES user(user_id) 
 );
@@ -369,8 +355,6 @@ CREATE TABLE IF NOT EXISTS feature (
     feature_id SMALLINT AUTO_INCREMENT PRIMARY KEY,
     feature_description VARCHAR(4095),
     feature_name VARCHAR(255) NOT NULL,
-    source_type_id TINYINT NOT NULL,
-    source_id SMALLINT,
     requirements VARCHAR(255),
     created_by MEDIUMINT NOT NULL,
     created_date DATE NOT NULL,

@@ -216,7 +216,6 @@ exports.DeleteCreatureLanguage = (creatureId, languageId, callback) => {
     })
 }
 
-//TODO
 exports.GetCreatureAttacks = (creatureId, callback) => {
     connection.query('SELECT * FROM attack WHERE creature_id = ?', [creatureId], function(error, results, fields) {
         if (error) throw error
@@ -241,7 +240,6 @@ exports.GetAlignment = (alignmentId, callback) => {
 exports.GetAllCreatureTypes = (callback) => {
     connection.query('SELECT * FROM creature_type', [], function(error, results, fields) {
         if (error) throw error
-        console.log("Results" + results)
         callback(results)
     })  
 }
@@ -296,14 +294,14 @@ exports.DeleteCreatureDamageModification = (damageModificationId, callback) => {
 }
 
 exports.GetModificationTypes = (callback) => {
-    connection.query('SELECT * FROM modifcation_type', [], function(error, results, fields) {
+    connection.query('SELECT * FROM modification_type', [], function(error, results, fields) {
         if (error) throw error
         callback(results)
     })
 }
 
 exports.GetModificationType = (modificationTypeId, callback) => {
-    connection.query('SELECT * FROM modifcation_type WHERE modification_type_id = ?', [modificationTypeId], function(error, results, fields) {
+    connection.query('SELECT * FROM modification_type WHERE modification_type_id = ?', [modificationTypeId], function(error, results, fields) {
         if (error) throw error
         callback(results)
     })
@@ -352,14 +350,10 @@ exports.GetBackgrounds = (callback) => {
     }) 
 }
 
-//TODO make this better with a JOIN
 exports.GetCreatureBackground = (creatureId, callback) => {
-    connection.query('SELECT background_id FROM creature WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+    connection.query('SELECT background.background_id, background.background_name, background.background_description, background.created_by, background.created_date, background.last_updated_by, background.last_updated_date FROM background JOIN creature ON creature.background_id = background.background_id WHERE creature.creature_id = ?', [creatureId], function(error, results, fields) {
         if (error) throw error
-        connection.query('SELECT * FROM background WHERE background_id = ?', [results], function(error, results, fields) {
-            if (error) throw error
-            callback(results)
-        })
+        callback(results)
     })
 }
 
@@ -395,7 +389,7 @@ exports.UpdateCreatureRace = (creatureId, raceId, userId, callback) => {
 }
 
 exports.GetMagicSchoolNames = (callback) => {
-    connection.query('SELECT name from magic_school', [], (req, res) => {
+    connection.query('SELECT name FROM magic_school', [], function(error, results, fields) {
         if (error) throw error
         callback(results)
     })
@@ -422,8 +416,8 @@ exports.GetCreatureKnownSpells = (creatureId, callback) => {
     })
 }
 
-exports.CreateCreatureKnownSpell = (creatureId, spellId, sourceTypeId, sourceId, userId, callback) => {
-    connection.query('INSERT INTO known_spell (spell_id, creature_id, source_type_id, source_id, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, ?, ?, NOW(), ?, NOW())', [spellId, creatureId, sourceTypeId, sourceId, userId, userId], function(error, results, fields) {
+exports.CreateCreatureKnownSpell = (creatureId, spellId, userId, callback) => {
+    connection.query('INSERT INTO known_spell (spell_id, creature_id, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, ?, ?, NOW(), ?, NOW())', [spellId, creatureId, sourceTypeId, sourceId, userId, userId], function(error, results, fields) {
         if (error) throw error
         callback(results)
     })
@@ -436,8 +430,8 @@ exports.GetFeature = (featureId, callback) => {
     })
 }
 
-exports.GetSourceType = (sourceTypeId, callback) => {
-    connection.query('SELECT * FROM source_type WHERE source_type_id = ?', [sourceTypeId], function(error, results, fields) {
+exports.GetCreatureProficiencies = (creatureId, callback) => {
+    connection.query('SELECT * FROM proficiency WHERE creature_id = ?', [creatureId], function(error, results, fields) {
         if (error) throw error
         callback(results)
     })

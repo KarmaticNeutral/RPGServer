@@ -44,8 +44,6 @@ DROP TABLE rpg.magic_school;
 
 DROP TABLE rpg.spell;
 
-DROP TABLE rpg.source_type;
-
 DROP TABLE rpg.known_spell;
 
 DROP TABLE rpg.feature;
