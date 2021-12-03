@@ -57,7 +57,7 @@ app.get('/api/creature/:creatureId', (req, res) => {
 })
 
 //TODO
-app.put('/api/creature/', (req, res) => {
+app.post('/api/creature/', (req, res) => {
     SqlService.UpdateCreature(req.body.creature, (results) => {
         if (results)
             res.status(200).json(results)
