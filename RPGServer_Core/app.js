@@ -21,10 +21,10 @@ app.use(
         secret: process.env.SECRET,
     })
 )
-
-app.use([requiresAuth(), logger])
-// app.use(express.json())
-// app.use(express.urlencoded({ extended: true }))
+app.use([logger])
+//app.use([requiresAuth(), logger])
+//app.use(express.json())
+//app.use(express.urlencoded({ extended: true }))
 
 //Working
 app.get('/', (req, res) => {
@@ -58,7 +58,17 @@ app.get('/api/creature/:creatureId', (req, res) => {
 
 //TODO
 app.post('/api/creature/', (req, res) => {
-    SqlService.UpdateCreature(req.body.creature, (results) => {
+    SqlService.UpsertCreature(req.body.creature, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
+//Working
+app.delete('/api/creature/:creatureId', (req, res) => {
+    SqlService.DeleteCreature(req.params.creatureId, (results) => {
         if (results)
             res.status(200).json(results)
         else
@@ -84,6 +94,16 @@ app.get('/api/user', (req, res) => {
 //Working
 app.get('/api/item/:itemId', (req, res) => {
     SqlService.GetItem(req.params.itemId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
+//Working
+app.delete('/api/item/:itemId', (req, res) => {
+    SqlService.DeleteItem(req.params.itemId, (results) => {
         if (results)
             res.status(200).json(results)
         else

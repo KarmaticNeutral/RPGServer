@@ -37,29 +37,59 @@ exports.GetCreature = (creatureId, callback) => {
     });
 }
 
-exports.UpdateCreature = (creature, userId, callback) => {
-    connection.query('UPDATE creature SET creature_name = ?, race_id = ?, background_id = ?, creature_type_id = ?, creature_size_id = ?, armor_class = ?, ac_type = ?, challenge_rating = ?, current_hitpoints = ?, max_hitpoints = ?, temporary_hitpoints = ?, expended_hitdie = ?, speed = ?, climb_speed = ?, fly_speed = ?, swim_speed = ?, str_score = ?, dex_score = ?, con_score = ?, wis_score = ?, int_score = ?, cha_score = ?, failed_death_saves = ?, passed_death_saves = ?, last_updated_by = ?, last_updated_date = NOW() WHERE creature_id = ?', 
-    [creature.creature_name, creature.race_id, creature.background_id, creature.creature_type_id, creature.creature_size_id, creature.armor_class, creature.ac_type, creature.challenge_rating, creature.current_hitpoints, creature.max_hitpoints, creature.temporary_hitpoints, creature.expended_hitdie, creature.speed, creature.climb_speed, creature.fly_speed, creature.swim_speed, creature.str_score, creature.dex_score, creature.con_score, creature.wis_score, creature.int_score, creature.cha_score, creature.failed_death_saves, creature.passed_death_saves, userId, creature.creature_id], function(error, results, fields) {
-        if (error) throw error
-        callback(results)
-    })
+exports.UpsertCreature = (creature, userId, callback) => {
+    if (creature.creature_id == -1) {
+        connection.query('INSERT INTO creature (creature_name, race_id, background_id, creature_type_id, creature_size_id, armor_class, ac_type, challenge_rating, current_hitpoints, max_hitpoints, temporary_hitpoints, expended_hitdie, speed, climb_speed, fly_speed, swim_speed, str_score, dex_score, con_score, wis_score, int_score, cha_score, failed_death_saves, passed_death_saves, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                        [creature.creature_name, creature.race_id, creature.background_id, creature.creature_type_id, creature.creature_size_id, creature.armor_class, creature.ac_type, creature.challenge_rating, creature.current_hitpoints, creature.max_hitpoints, creature.temporary_hitpoints, creature.expended_hitdie, creature.speed, creature.climb_speed, creature.fly_speed, creature.swim_speed, creature.str_score, creature.dex_score, creature.con_score, creature.wis_score, creature.int_score, creature.cha_score, creature.failed_death_saves, creature.passed_death_saves, userId, userId], function(error, results, fields) {
+            if (error) throw error
+            connection.query('INSERT INTO creature_access (creature_id, user_id, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, NOW(), ?, NOW())', 
+                            [creature.creature_id, userId, userId, userId], function(error, results2, fields) {
+                if (error) throw error
+                callback(results, results2)
+            })
+            callback(results)
+        })
+    } else {
+        connection.query('UPDATE creature SET creature_name = ?, race_id = ?, background_id = ?, creature_type_id = ?, creature_size_id = ?, armor_class = ?, ac_type = ?, challenge_rating = ?, current_hitpoints = ?, max_hitpoints = ?, temporary_hitpoints = ?, expended_hitdie = ?, speed = ?, climb_speed = ?, fly_speed = ?, swim_speed = ?, str_score = ?, dex_score = ?, con_score = ?, wis_score = ?, int_score = ?, cha_score = ?, failed_death_saves = ?, passed_death_saves = ?, last_updated_by = ?, last_updated_date = NOW() WHERE creature_id = ?', 
+                        [creature.creature_name, creature.race_id, creature.background_id, creature.creature_type_id, creature.creature_size_id, creature.armor_class, creature.ac_type, creature.challenge_rating, creature.current_hitpoints, creature.max_hitpoints, creature.temporary_hitpoints, creature.expended_hitdie, creature.speed, creature.climb_speed, creature.fly_speed, creature.swim_speed, creature.str_score, creature.dex_score, creature.con_score, creature.wis_score, creature.int_score, creature.cha_score, creature.failed_death_saves, creature.passed_death_saves, userId, creature.creature_id], function(error, results, fields) {
+            if (error) throw error
+            callback(results)
+        })
+    }
 }
 
-exports.CreateCreature = (creature, userId, callback) => {
-    connection.query('INSERT INTO creature (creature_name, race_id, background_id, creature_type_id, creature_size_id, armor_class, ac_type, challenge_rating, current_hitpoints, max_hitpoints, temporary_hitpoints, expended_hitdie, speed, climb_speed, fly_speed, swim_speed, str_score, dex_score, con_score, wis_score, int_score, cha_score, failed_death_saves, passed_death_saves, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [creature.creature_name, creature.race_id, creature.background_id, creature.creature_type_id, creature.creature_size_id, creature.armor_class, creature.ac_type, creature.challenge_rating, creature.current_hitpoints, creature.max_hitpoints, creature.temporary_hitpoints, creature.expended_hitdie, creature.speed, creature.climb_speed, creature.fly_speed, creature.swim_speed, creature.str_score, creature.dex_score, creature.con_score, creature.wis_score, creature.int_score, creature.cha_score, creature.failed_death_saves, creature.passed_death_saves, userId, userId], function(error, results, fields) {
-        if (error) throw error
-        connection.query('INSERT INTO creature_access (creature_id, user_id, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, NOW(), ?, NOW())', [creature.creature_id, userId, userId, userId], function(error, results2, fields) {
-            if (error) throw error
-            callback(results, results2)
-        })
-        callback(results)
-    })
-}
 
 exports.DeleteCreature = (creatureId, callback) => {
-    connection.query('DELETE FROM creature WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+    connection.query('DELETE FROM proficiency WHERE creature_id = ?', [creatureId], function(error, results, fields) {
         if (error) throw error
-        callback(results)
+        connection.query('DELETE FROM creature_access WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+            if (error) throw error
+            connection.query('DELETE FROM damage_modification WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+                if (error) throw error
+                connection.query('DELETE FROM attack WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+                    if (error) throw error
+                    connection.query('DELETE FROM known_language WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+                        if (error) throw error
+                        connection.query('DELETE FROM purse WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+                            if (error) throw error
+                            connection.query('DELETE FROM inventory WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+                                if (error) throw error
+                                connection.query('DELETE FROM known_spell WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+                                    if (error) throw error
+                                    connection.query('DELETE FROM class_info WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+                                        if (error) throw error
+                                        connection.query('DELETE FROM creature WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+                                            if (error) throw error/
+                                            callback(results)
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })                
+            })
+        })
     })
 }
 
@@ -102,24 +132,27 @@ exports.GetItem = (itemId, callback) => {
     })
 }
 
-exports.CreateItem = (item, userId, callback) => {
-    connection.query('INSERT INTO item (name, description, item_data, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, ?, NOW(), ?, NOW())', [item.name, item.description, item.item_data, userId, userId], function(error, results, fields) {
-        if (error) throw error
-        callback(results)
-    })
-}
-
-exports.UpdateItem = (item, userId, callback) => {
-    connection.query('UPDATE item SET name = ?, description = ?, item_data = ?, last_updated_by = ?, last_updated_date = NOW() WHERE item_id = ?', [item.name, item.description, item.item_data, userId, item.item_id], function(error, results, fields) {
-        if (error) throw error
-        callback(results)
-    })
+exports.UpsertItem = (item, userId, callback) => {
+    if (item.item_id == -1) {
+        connection.query('INSERT INTO item (name, description, item_data, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, ?, NOW(), ?, NOW())', [item.name, item.description, item.item_data, userId, userId], function(error, results, fields) {
+            if (error) throw error
+            callback(results)
+        })
+    } else {
+        connection.query('UPDATE item SET name = ?, description = ?, item_data = ?, last_updated_by = ?, last_updated_date = NOW() WHERE item_id = ?', [item.name, item.description, item.item_data, userId, item.item_id], function(error, results, fields) {
+            if (error) throw error
+            callback(results)
+        })
+    }
 }
 
 exports.DeleteItem = (itemId, callback) => {
-    connection.query('DELETE FROM item WHERE item_id = ?', [itemId], function(error, results, fields) {
+    connection.query('DELETE FROM invetory WHERE item_id = ?', [itemId], function(error, results, fields) {
         if (error) throw error
-        callback(results)
+        connection.query('DELETE FROM item WHERE item_id = ?', [itemId], function(error, results, fields) {
+            if (error) throw error
+            callback(results)
+        })
     })
 }
 
@@ -139,18 +172,18 @@ exports.GetCreaturePurse = (creatureId, callback) => {
     })
 }
 
-exports.UpdatePurse = (purse, userId, callback) => {
-    connection.query('UPDATE purse SET platinum_count = ?, gold_count = ?, electrum_count = ?, silver_count = ?, copper_count = ?, last_updated_by = ?, last_updated_date = NOW() WHERE purse_id = ?', [purse.platinum_count, purse.gold_count, purse.electrum_count, purse.silver_count, purse.copper_count, userId, purse.purse_id], function(error, results, fields) {
-        if (error) throw error
-        callback(results)
-    })
-}
-
-exports.CreatePurse = (purse, userId, callback) => {
-    connection.query('INSERT INTO purse (creature_id platinum_count, gold_count, electrum_count, silver_count, copper_count, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW())', [purse.creature_id, purse.platinum_count, purse.gold_count, purse.electrum_count, purse.silver_count, purse.copper_count, userId, userId], function(error, results, fields) {
-        if (error) throw errror
-        callback(results)
-    })
+exports.UpsertPurse = (purse, userId, callback) => {
+    if (purse.purse_id == -1) {
+        connection.query('INSERT INTO purse (creature_id platinum_count, gold_count, electrum_count, silver_count, copper_count, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW())', [purse.creature_id, purse.platinum_count, purse.gold_count, purse.electrum_count, purse.silver_count, purse.copper_count, userId, userId], function(error, results, fields) {
+            if (error) throw errror
+            callback(results)
+        })
+    } else {
+        connection.query('UPDATE purse SET platinum_count = ?, gold_count = ?, electrum_count = ?, silver_count = ?, copper_count = ?, last_updated_by = ?, last_updated_date = NOW() WHERE purse_id = ?', [purse.platinum_count, purse.gold_count, purse.electrum_count, purse.silver_count, purse.copper_count, userId, purse.purse_id], function(error, results, fields) {
+            if (error) throw error
+            callback(results)
+        })
+    }
 }
 
 exports.DeletePurse = (purseId, callback) => {
@@ -167,14 +200,14 @@ exports.GetCreatureInventory = (creatureId, callback) => {
     })
 }
 
-exports.CreateInventory = (itemId, creatureId, userId, callback) => {
+exports.AddItemToInventory = (itemId, creatureId, userId, callback) => {
     connection.query('INSERT INTO inventory (item_id, creature_id, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, NOW(), ?, NOW())', [itemId, creatureId, userId, userId], function(error, results, fields,) {
         if (error) throw error
         callback(results)
     })
 }
 
-exports.DeleteInventoryItem = (itemId, creatureId, callback) => {
+exports.DeleteItemFromInvetory = (itemId, creatureId, callback) => {
     connection.query('DELETE FROM inventory WHERE item_id = ? AND creature_id = ?', [itemId, creatureId], function(error, results, fields) {
         if (error) throw error
         callback(results)
@@ -188,7 +221,7 @@ exports.DeleteCreatureInventory = (creatureId, callback) => {
     })
 }
 
-exports.DeleteItemFromInventory = (itemId, callback) => {
+exports.DeleteItemFromAllInventories = (itemId, callback) => {
     connection.query('DELETE FROM inventory WHERE item_id = ?', [itemId], function(error, results, fields) {
         if (error) throw error
         callback(results)
@@ -218,6 +251,29 @@ exports.DeleteCreatureLanguage = (creatureId, languageId, callback) => {
 
 exports.GetCreatureAttacks = (creatureId, callback) => {
     connection.query('SELECT * FROM attack WHERE creature_id = ?', [creatureId], function(error, results, fields) {
+        if (error) throw error
+        callback(results)
+    })
+}
+
+exports.UpsertAttack = (attack, userId, callback) => {
+    if (attack.attack_id == -1) {
+        connection.query('INSERT INTO attack (attack_name, creature_id, attack_range, bonus, damage_die, damage_die_count, damage_bonus, damage_type_id, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())', 
+                        [attack.attack_name, attack.creature_id, attack.attack_range, attack.bonus, attack.damage_die, attack.damage_die_count, attack.damage_bonus, attack.damage_type_id, attack.created_by, attack.created_date, userId], function(error, results, fields) {
+            if (error) throw error
+            callback(results)
+        })
+    } else {
+        connection.query('UPDATE attack SET attack.attack_name = ?, attack_range = ?, bonus = ?, damage_die = ?, damage_die_count = ?, damage_bonus = ?, damage_type_id = ?, last_updated_by = ?, last_updated_date = NOW() WHERE attack_id = ?', 
+                        [attack.attack_name, attack.attack_range, attack.bonus, attack.damage_die, attack.damage_die_count, attack.damage_bonus, attack.damage_type_id, userId, attack.attack_id], function(error, results, fields) {
+            if (error) throw error
+            callback(results)
+        })
+    }
+}
+
+exports.DeleteAttack = (attackId) => {
+    connection.query('DELETE FROM attack WHERE attack_id = ?', [attackId], function(error, results, fields) {
         if (error) throw error
         callback(results)
     })
@@ -338,8 +394,18 @@ exports.GetCreatureClasses = (creatureId, callback) => {
 exports.PutLevelsInCreatureClass = (creatureId, classId, levels, userId, callback) => {
     connection.query('SELECT * FROM class_info WHERE class_id = ? AND creature_id = ?', [classId, creatureId], function(error, results, fields) {
         if (error) throw error
-        //TODO detect if there is already a row, if there is update it.
-        // if not create a new row
+        if (results.length == 0) {
+            connection.query('INSERT INTO class_info (creature_id, class_id, levels, created_by, created_date, last_update_by, last_updated_date) VALUES (?, ?, ?, ?, NOW(), ?, NOW())', [creatureId, classId, levels, userId, userId], function(error, results, fields) {
+                if (error) throw error
+                callback(results)
+            })
+        } else {
+            connection.query('UPDATE class_info SET levels = ?, last_udpated_by = ?, last_updated_date = NOW() WHERE creature_id = ? AND class_id = ?', 
+                            [results[0].levels + levels, userId, creatureId, classId], function(error, results, fields) {
+                if(error) throw error
+                callback(results)
+            })
+        }
     })
 }
 
