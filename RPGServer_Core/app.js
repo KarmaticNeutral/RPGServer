@@ -8,6 +8,7 @@ const { auth, requiresAuth } = require('express-openid-connect')
 const fs = require('fs')
 require('dotenv').config()
 const logger = require('./middleware/logger.js')
+const e = require('express')
 
 const notFoundPage = fs.readFileSync('./pages/notFound.html')
 
@@ -56,7 +57,6 @@ app.get('/api/creature/:creatureId', (req, res) => {
     })
 })
 
-//TODO
 app.post('/api/creature/', (req, res) => {
     SqlService.UpsertCreature(req.body.creature, (results) => {
         if (results)
@@ -122,6 +122,16 @@ app.get('/api/creature/:creatureId/purse', (req, res) => {
 })
 
 //Working
+app.delete('/api/creature/:creatureId/purse', (req, res) => {
+    SqlService.DeleteCreaturePurse(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
+//Working
 app.get('/api/inventory/:creatureId', (req, res) => {
     SqlService.GetCreatureInventory(req.params.creatureId, (results) => {
         if (results)
@@ -132,8 +142,48 @@ app.get('/api/inventory/:creatureId', (req, res) => {
 })
 
 //Working
+app.delete('/api/creature/:creatureId/inventory/:itemId', (req, res) => {
+    SqlService.DeleteItemFromInvetory(req.params.itemId, req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
+//Working
+app.delete('/api/inventory/:creatureId', (req, res) => {
+    SqlService.DeleteCreatureInventory(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
+//Working
+app.delete('/api/inventory/all/:itemId', (req, res) => {
+    SqlService.DeleteItemFromAllInventories(req.params.itemId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+}) 
+
+//Working
 app.get('/api/creature/:creatureId/languages', (req, res) => {
-    SqlService.GetCreatureLanguage(req.params.creatureId, (results) => {
+    SqlService.GetCreatureLanguages(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
+//Working
+app.delete('/api/creature/:creatureId/languages/:languageId', (req, res) => {
+    SqlService.DeleteCreatureLanguage(req.params.creatureId, req.params.languageId, (results) => {
         if (results)
             res.status(200).json(results)
         else
@@ -144,6 +194,16 @@ app.get('/api/creature/:creatureId/languages', (req, res) => {
 //Working
 app.get('/api/creature/:creatureId/attacks', (req, res) => {
     SqlService.GetCreatureAttacks(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
+//Working
+app.delete('/api/attacks/:attackId', (req, res) => {
+    SqlService.DeleteAttack(req.params.attackId, (results) => {
         if (results)
             res.status(200).json(results)
         else
@@ -211,6 +271,26 @@ app.get('/api/creature/:creatureId/classes', (req, res) => {
     })
 })
 
+//TODO
+app.post('/api/creature/:creatureId/classes/:classId/level', (req, res) => {
+    SqlService.PutLevelsInCreatureClass(req.params.creatureId, req.params.classId, 1, req.oidc.user, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")        
+    })
+})
+
+//TODO
+app.post('/api/creature/:creatureId/classes/:classId/level/:levels', (req, res) => {
+    SqlService.PutLevelsInCreatureClass(req.params.creatureId, req.params.classId, req.params.levels, req.oidc.user, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")        
+    })
+})
+
 //Working
 app.get('/api/creature/type/:creatureTypeId', (req, res) => {
     SqlService.GetCreatureType(req.params.creatureTypeId, (results) => {
@@ -222,12 +302,42 @@ app.get('/api/creature/type/:creatureTypeId', (req, res) => {
 })
 
 //Working
+app.get('/api/creature_size', (req, res) => {
+    SqlService.GetCreatureSizes((results) => {
+    if (results)
+        res.status(200).json(results)
+    else
+        res.status(503).send("Service Unavailable")       
+    })
+})
+
+//Working
+app.get('/api/creature_size/:sizeId', (req, res) => {
+    SqlService.GetCreatureSize(req.params.sizeId, (results) => {
+    if (results)
+        res.status(200).json(results)
+    else
+        res.status(503).send("Service Unavailable")       
+    })
+})
+
+//Working
 app.get('/api/creature/:creatureID/damage_modification', (req, res) => {
     SqlService.GetCreatureDamageModifications(req.params.creatureID, (results) => {
         if (results)
             res.status(200).json(results)
         else
             res.status(503).send("Service Unavailable")
+    })
+})
+
+//Working
+app.delete('/api/creature/:creatureId/damage_modification/:damageModificationId', (req, res) => {
+    SqlService.DeleteCreatureDamageModification(req.params.damageModificationId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")        
     })
 })
 
@@ -292,6 +402,25 @@ app.get('/api/background', (req, res) => {
 })
 
 //Working
+app.get('/api/race', (req, res) => {
+    SqlService.GetRaces((results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
+app.get('/api/creature/:creatureId/race', (req, res) => {
+    SqlService.GetCreatureRace(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")        
+    })
+})
+
+//Working
 app.get('/api/creature/:creatureId/background', (req, res) => {
     SqlService.GetCreatureBackground(req.params.creatureId, (results) => {
         if (results)
@@ -342,6 +471,16 @@ app.get('/api/creature/:creatureId/spell', (req, res) => {
 })
 
 //Working
+app.delete('/api/creature/:creatureId/spell/:spellId', (req, res) => {
+    SqlService.DeleteCreatureKnownSpell(req.params.creatureId, req.params.spellId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
+//Working
 app.get('/api/feature/:featureId', (req, res) => {
     SqlService.GetFeature(req.params.featureId, (results) => {
         if (results)
@@ -354,6 +493,16 @@ app.get('/api/feature/:featureId', (req, res) => {
 //Working
 app.get('/api/creature/:creatureId/proficiencies', (req, res) => {
     SqlService.GetCreatureProficiencies(req.params.creatureId, (results) => {
+        if (results)
+            res.status(200).json(results)
+        else
+            res.status(503).send("Service Unavailable")
+    })
+})
+
+//Working
+app.delete('/api/creature/:creatureId/proficiencies/:proficiencyId', (req, res) => {
+    SqlService.DeleteProficiency(req.params.creatureId, req.params.proficiencyId, (results) => {
         if (results)
             res.status(200).json(results)
         else
