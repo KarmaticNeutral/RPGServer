@@ -1,5 +1,6 @@
 const path = require('path')
 const express = require('express')
+const https = require('https')
 const app = express()
 const port = process.env.PORT || 3000
 
@@ -8,7 +9,19 @@ const { auth, requiresAuth } = require('express-openid-connect')
 const fs = require('fs')
 require('dotenv').config()
 const logger = require('./middleware/logger.js')
-const e = require('express')
+
+key = fs.readFileSync("./cert/key.pem", 'utf8').replace("\\n", "\n")
+cert = fs.readFileSync("./cert/cert.pem", 'utf8').replace("\\n", "\n")
+
+console.log(key)
+console.log(cert)
+
+https.createServer(
+    {
+        key: key,
+        cert: cert
+    },
+app ).listen(port, () => {console.log(`Server is listening on port ${port}...`)})
 
 const notFoundPage = fs.readFileSync('./pages/notFound.html')
 
@@ -513,5 +526,3 @@ app.delete('/api/creature/:creatureId/proficiencies/:proficiencyId', (req, res) 
 app.all('*', (req,res) => {
     res.status(404).send(notFoundPage)
 })
-
-app.listen(port, () => {console.log(`Server is listening on port ${port}...`)})
