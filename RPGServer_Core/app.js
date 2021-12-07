@@ -8,7 +8,8 @@ const { auth, requiresAuth } = require('express-openid-connect')
 const fs = require('fs')
 require('dotenv').config()
 const logger = require('./middleware/logger.js')
-const e = require('express')
+
+app.listen(port, () => {console.log(`Server is listening on port ${port}...`)})
 
 const notFoundPage = fs.readFileSync('./pages/notFound.html')
 
@@ -513,5 +514,3 @@ app.delete('/api/creature/:creatureId/proficiencies/:proficiencyId', (req, res) 
 app.all('*', (req,res) => {
     res.status(404).send(notFoundPage)
 })
-
-app.listen(port, () => {console.log(`Server is listening on port ${port}...`)})
