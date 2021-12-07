@@ -28,14 +28,14 @@ async function runQueryFromFile(path, conn) {
 
 async function standardQuery(conn, query) {
     return new Promise(resolve => {
-        console.log("Running: " + query)
+        //console.log("Running: " + query)
         setTimeout(() => {
             resolve('Timed Out During Query')
         }, 30000)
         conn.query(query, function(err, results) {
             if (err) throw err
-            console.log("Succesful Query: ", query)
-            console.log("Results of Query", results)
+            //console.log("Succesful Query: ", query)
+            //console.log("Results of Query", results)
             resolve(results)
         })
     })
@@ -48,7 +48,7 @@ async function build() {
         throw err
     })
     .then((res) => {
-        console.log("Build Res: ", res)
+        //console.log("Build Res: ", res)
     })
 
     rpg.connect((err) => {if (err) throw err})
@@ -57,7 +57,7 @@ async function build() {
         throw err
     })
     .then((res) => {
-        console.log("Build Res: ", res)
+        //console.log("Build Res: ", res)
     })
     
     await runQueryFromFile('./sqlCommands/populateLookups.sql', rpg)
@@ -65,7 +65,7 @@ async function build() {
         throw err
     })
     .then((res) => {
-        console.log("Build Res: ", res)
+        //console.log("Build Res: ", res)
     })
 
     await runQueryFromFile('./sqlCommands/createDMCreature.sql', rpg)
@@ -73,7 +73,8 @@ async function build() {
         throw err
     })
     .then((res) => {
-        console.log("Build Res: ", res)
+        //console.log("Build Res: ", res)
+        console.log("Build Complete")
     })
 }
 
