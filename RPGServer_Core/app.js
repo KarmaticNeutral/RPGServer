@@ -1,6 +1,6 @@
 const path = require('path')
 const express = require('express')
-const https = require('https')
+//const https = require('https')
 const app = express()
 const port = process.env.PORT || 3000
 
@@ -16,8 +16,9 @@ cert = fs.readFileSync("./cert/server.cert", 'utf8')
 // console.log(key)
 // console.log(cert)
 
-https.createServer({ key: key, cert: cert }, app).listen(port, () => {console.log(`Server is listening on port ${port}...`)})
+// https.createServer({ key: key, cert: cert }, app).listen(port, () => {console.log(`Server is listening on port ${port}...`)})
 
+app.listen(port, () => {console.log(`Server is running on port ${port}...`)})
 
 const notFoundPage = fs.readFileSync('./pages/notFound.html')
 

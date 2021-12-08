@@ -3,13 +3,13 @@ mysql = require('mysql')
 
 connection = mysql.createConnection({
     host: 'localhost',
-    user: 'root',
+    user: 'admin',
     password: 'password'
 })
 
 rpg = mysql.createConnection({
     host: 'localhost',
-    user: 'root',
+    user: 'admin',
     password: 'password',
     database: 'rpg',
     multipleStatements: true
