@@ -83,7 +83,7 @@ exports.DeleteCreature = (creatureId, callback) => {
                                     connection.query('DELETE FROM class_info WHERE creature_id = ?', [creatureId], function(error, results, fields) {
                                         if (error) throw error
                                         connection.query('DELETE FROM creature WHERE creature_id = ?', [creatureId], function(error, results, fields) {
-                                            if (error) throw error/
+                                            if (error) throw error
                                             callback(results)
                                         })
                                     })
