@@ -18,6 +18,7 @@ cert = fs.readFileSync("./cert/server.cert", 'utf8')
 
 https.createServer({ key: key, cert: cert }, app).listen(port, () => {console.log(`Server is listening on port ${port}...`)})
 
+
 const notFoundPage = fs.readFileSync('./pages/notFound.html')
 
 app.use(
