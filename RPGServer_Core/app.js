@@ -1,5 +1,6 @@
 const path = require('path')
 const express = require('express')
+const https = require('https')
 const app = express()
 const port = process.env.PORT || 3000
 
@@ -9,7 +10,14 @@ const fs = require('fs')
 require('dotenv').config()
 const logger = require('./middleware/logger.js')
 
-app.listen(port, () => {console.log(`Server is listening on port ${port}...`)})
+key = fs.readFileSync("./cert/server.key", 'utf8')
+cert = fs.readFileSync("./cert/server.cert", 'utf8')
+
+// console.log(key)
+// console.log(cert)
+
+https.createServer({ key: key, cert: cert }, app).listen(port, () => {console.log(`Server is listening on port ${port}...`)})
+
 
 const notFoundPage = fs.readFileSync('./pages/notFound.html')
 
@@ -58,6 +66,7 @@ app.get('/api/creature/:creatureId', (req, res) => {
     })
 })
 
+//TODO
 app.post('/api/creature/', (req, res) => {
     SqlService.UpsertCreature(req.body.creature, (results) => {
         if (results)
