@@ -1,6 +1,5 @@
 const path = require('path')
 const express = require('express')
-//const https = require('https')
 const app = express()
 const port = process.env.PORT || 3000
 
@@ -9,14 +8,6 @@ const { auth, requiresAuth } = require('express-openid-connect')
 const fs = require('fs')
 require('dotenv').config()
 const logger = require('./middleware/logger.js')
-
-key = fs.readFileSync("./cert/server.key", 'utf8')
-cert = fs.readFileSync("./cert/server.cert", 'utf8')
-
-// console.log(key)
-// console.log(cert)
-
-// https.createServer({ key: key, cert: cert }, app).listen(port, () => {console.log(`Server is listening on port ${port}...`)})
 
 app.listen(port, () => {console.log(`Server is running on port ${port}...`)})
 
@@ -34,8 +25,6 @@ app.use(
 )
 app.use([logger])
 //app.use([requiresAuth(), logger])
-//app.use(express.json())
-//app.use(express.urlencoded({ extended: true }))
 
 //Working
 app.get('/', (req, res) => {
