@@ -1,3 +1,5 @@
+const { NullOrUndefined } = require('./util/tools')
+
 require('./buildSql')
 mysql = require('mysql')
 
@@ -101,11 +103,13 @@ exports.DeleteCreature = (creatureId, callback) => {
 exports.GetUserCreatures = (user, callback) => {
     connection.query('SELECT * FROM user WHERE user.username = ?', [user.name], function (error, results, fields) {
         if (error) throw error
-        userId = results.user_id
-        connection.query('SELECT * FROM creature JOIN creature_access ON creature.creature_id = creature_access.creature_id', [], function (error, results, fields) {
-            if (error) throw error
-            callback(results)
-        })
+        if (results.length > 0) {
+            userId = results[0].user_id
+            connection.query('SELECT * FROM creature JOIN creature_access ON creature.creature_id = creature_access.creature_id WHERE creature_access.user_id = ?', [userId], function (error, results, fields) {
+                if (error) throw error
+                callback(results)
+            })
+        }
     })
 }
 
@@ -438,22 +442,34 @@ exports.GetCreatureClasses = (creatureId, callback) => {
 }
 
 //TODO
-exports.PutLevelsInCreatureClass = (creatureId, classId, levels, userId, callback) => {
-    connection.query('SELECT * FROM class_info WHERE class_id = ? AND creature_id = ?', [classId, creatureId], function(error, results, fields) {
-        if (error) throw error
-        if (results.length == 0) {
-            connection.query('INSERT INTO class_info (creature_id, class_id, levels, created_by, created_date, last_update_by, last_updated_date) VALUES (?, ?, ?, ?, NOW(), ?, NOW())', [creatureId, classId, levels, userId, userId], function(error, results, fields) {
-                if (error) throw error
-                callback(results)
-            })
-        } else {
-            connection.query('UPDATE class_info SET levels = ?, last_udpated_by = ?, last_updated_date = NOW() WHERE creature_id = ? AND class_id = ?', 
-                            [results[0].levels + levels, userId, creatureId, classId], function(error, results, fields) {
-                if(error) throw error
-                callback(results)
-            })
-        }
-    })
+exports.PutLevelsInCreatureClass = (creatureId, classId, levels, user, callback) => {
+    if (NullOrUndefined(user)) {
+        callback("User ID Unknown");
+    } else {
+        connection.query('SELECT user_id FROM user WHERE username = ?', [user.name], function(error, results, fields) {
+            if (error) throw error
+            if (results.length == 0) {
+                callback("User ID Unknown")
+            } else {
+                userId = results[0]
+                connection.query('SELECT * FROM class_info WHERE class_id = ? AND creature_id = ?', [classId, creatureId], function(error, results, fields) {
+                    if (error) throw error
+                    if (results.length == 0) {
+                        connection.query('INSERT INTO class_info (creature_id, class_id, levels, created_by, created_date, last_update_by, last_updated_date) VALUES (?, ?, ?, ?, NOW(), ?, NOW())', [creatureId, classId, levels, userId, userId], function(error, results, fields) {
+                            if (error) throw error
+                            callback(results)
+                        })
+                    } else {
+                        connection.query('UPDATE class_info SET levels = ?, last_updated_by = ?, last_updated_date = NOW() WHERE creature_id = ? AND class_id = ?', 
+                                        [results[0].levels + levels, userId, creatureId, classId], function(error, results, fields) {
+                            if(error) throw error
+                            callback(results)
+                        })
+                    }
+                })
+            }
+        })
+    }
 }
 
 //Implemented
