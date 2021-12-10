@@ -2,12 +2,17 @@ const path = require('path')
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000
+const bodyParser = require('body-parser')
 
 const SqlService = require('./sqlService')
 const { auth, requiresAuth } = require('express-openid-connect')
 const fs = require('fs')
 require('dotenv').config()
 const logger = require('./middleware/logger.js')
+const headerSetup = require('./middleware/headerSetup')
+
+var jsonParser = bodyParser.json()
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 app.listen(port, () => {console.log(`Server is running on port ${port}...`)})
 
@@ -23,8 +28,8 @@ app.use(
         secret: process.env.SECRET,
     })
 )
-app.use([logger])
-//app.use([requiresAuth(), logger])
+app.use([logger, headerSetup])
+//app.use([logger, headerSetup, requiresAuth()])
 
 //Working
 app.get('/', (req, res) => {
@@ -57,8 +62,8 @@ app.get('/api/creature/:creatureId', (req, res) => {
 })
 
 //TODO
-app.post('/api/creature/', (req, res) => {
-    SqlService.UpsertCreature(req.body.creature, (results) => {
+app.post('/api/creature', jsonParser, (req, res) => {
+    SqlService.UpsertCreature(req.body, (results) => {
         if (results)
             res.status(200).json(results)
         else

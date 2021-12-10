@@ -42,22 +42,21 @@ exports.GetCreature = (creatureId, callback) => {
     });
 }
 
-//TODO
-exports.UpsertCreature = (creature, userId, callback) => {
+//Implemented INSERT TODO UPDATE
+exports.UpsertCreature = (creature, callback) => {
     if (creature.creature_id == -1) {
-        connection.query('INSERT INTO creature (creature_name, race_id, background_id, creature_type_id, creature_size_id, armor_class, ac_type, challenge_rating, current_hitpoints, max_hitpoints, temporary_hitpoints, expended_hitdie, speed, climb_speed, fly_speed, swim_speed, str_score, dex_score, con_score, wis_score, int_score, cha_score, failed_death_saves, passed_death_saves, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-                        [creature.creature_name, creature.race_id, creature.background_id, creature.creature_type_id, creature.creature_size_id, creature.armor_class, creature.ac_type, creature.challenge_rating, creature.current_hitpoints, creature.max_hitpoints, creature.temporary_hitpoints, creature.expended_hitdie, creature.speed, creature.climb_speed, creature.fly_speed, creature.swim_speed, creature.str_score, creature.dex_score, creature.con_score, creature.wis_score, creature.int_score, creature.cha_score, creature.failed_death_saves, creature.passed_death_saves, userId, userId], function(error, results, fields) {
+        connection.query('INSERT INTO creature (creature_name, race_id, background_id, creature_type_id, creature_size_id, armor_class, ac_type, challenge_rating, current_hitpoints, max_hitpoints, temporary_hitpoints, expended_hitdie, speed, climb_speed, fly_speed, swim_speed, str_score, dex_score, con_score, wis_score, int_score, cha_score, failed_death_saves, passed_death_saves, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW())', 
+                        [creature.creature_name, creature.race_id, creature.background_id, creature.creature_type_id, creature.creature_size_id, creature.armor_class, creature.ac_type, creature.challenge_rating, creature.current_hitpoints, creature.max_hitpoints, creature.temporary_hitpoints, creature.expended_hitdie, creature.speed, creature.climb_speed, creature.fly_speed, creature.swim_speed, creature.str_score, creature.dex_score, creature.con_score, creature.wis_score, creature.int_score, creature.cha_score, creature.failed_death_saves, creature.passed_death_saves, 1, 1], function(error, results, fields) {
             if (error) throw error
             connection.query('INSERT INTO creature_access (creature_id, user_id, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, NOW(), ?, NOW())', 
-                            [creature.creature_id, userId, userId, userId], function(error, results2, fields) {
+                            [results.insertId, 1, 1, 1], function(error, results, fields) {
                 if (error) throw error
-                callback(results, results2)
+                callback(results)
             })
-            callback(results)
         })
     } else {
         connection.query('UPDATE creature SET creature_name = ?, race_id = ?, background_id = ?, creature_type_id = ?, creature_size_id = ?, armor_class = ?, ac_type = ?, challenge_rating = ?, current_hitpoints = ?, max_hitpoints = ?, temporary_hitpoints = ?, expended_hitdie = ?, speed = ?, climb_speed = ?, fly_speed = ?, swim_speed = ?, str_score = ?, dex_score = ?, con_score = ?, wis_score = ?, int_score = ?, cha_score = ?, failed_death_saves = ?, passed_death_saves = ?, last_updated_by = ?, last_updated_date = NOW() WHERE creature_id = ?', 
-                        [creature.creature_name, creature.race_id, creature.background_id, creature.creature_type_id, creature.creature_size_id, creature.armor_class, creature.ac_type, creature.challenge_rating, creature.current_hitpoints, creature.max_hitpoints, creature.temporary_hitpoints, creature.expended_hitdie, creature.speed, creature.climb_speed, creature.fly_speed, creature.swim_speed, creature.str_score, creature.dex_score, creature.con_score, creature.wis_score, creature.int_score, creature.cha_score, creature.failed_death_saves, creature.passed_death_saves, userId, creature.creature_id], function(error, results, fields) {
+                        [creature.creature_name, creature.race_id, creature.background_id, creature.creature_type_id, creature.creature_size_id, creature.armor_class, creature.ac_type, creature.challenge_rating, creature.current_hitpoints, creature.max_hitpoints, creature.temporary_hitpoints, creature.expended_hitdie, creature.speed, creature.climb_speed, creature.fly_speed, creature.swim_speed, creature.str_score, creature.dex_score, creature.con_score, creature.wis_score, creature.int_score, creature.cha_score, creature.failed_death_saves, creature.passed_death_saves, 1, creature.creature_id], function(error, results, fields) {
             if (error) throw error
             callback(results)
         })
