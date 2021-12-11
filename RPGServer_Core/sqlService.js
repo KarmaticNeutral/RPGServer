@@ -42,7 +42,7 @@ exports.GetCreature = (creatureId, callback) => {
     });
 }
 
-//Implemented INSERT TODO UPDATE
+//Implemented
 exports.UpsertCreature = (creature, callback) => {
     if (creature.creature_id == -1) {
         connection.query('INSERT INTO creature (creature_name, race_id, background_id, creature_type_id, creature_size_id, armor_class, ac_type, challenge_rating, current_hitpoints, max_hitpoints, temporary_hitpoints, expended_hitdie, speed, climb_speed, fly_speed, swim_speed, str_score, dex_score, con_score, wis_score, int_score, cha_score, failed_death_saves, passed_death_saves, created_by, created_date, last_updated_by, last_updated_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW())', 
